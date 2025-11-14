@@ -26,7 +26,7 @@ The solution enforces policy adherence through a two-phase process:
 
 (2) **Runtime**: ToolGuards are deployed within the agent's ReAct flow, and are executed after "reason" and just before "act" (agent's tool invocation). If a planned action violates a policy, the agent is prompted to self-reflect and revise its plan before proceeding. Ultimately, the deployed ToolGuards will prevent the agent from taking an action violating a policy.
 
-![two-phase-solution](buildtime-runtime.png)
+<!-- ![two-phase-solution](buildtime-runtime.png) -->
 
 
 ## When it is Recommended to Use This Component
