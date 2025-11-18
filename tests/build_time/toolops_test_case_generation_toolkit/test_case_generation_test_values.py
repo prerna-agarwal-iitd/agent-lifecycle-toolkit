@@ -1,3 +1,4 @@
+import os
 from altk.core.toolkit import AgentPhase
 from altk.build_time.test_case_generation_toolkit.core.toolkit import (
     TestCaseGenBuildInput,
@@ -7,7 +8,6 @@ from altk.build_time.test_case_generation_toolkit.utils.test_case_generation imp
 )
 from altk.build_time.test_case_generation_toolkit.core.config import TestCaseGenConfig
 from altk.core.llm import get_llm, GenerationMode
-import os
 
 
 def get_llm_client_obj(model_name="mistralai/mistral-medium-2505"):
@@ -21,18 +21,9 @@ def get_llm_client_obj(model_name="mistralai/mistral-medium-2505"):
     return client
 
 
-def example_testcase_generation_with_toolkit(python_tool_str, values, config):
+def test_case_generation_with_values_toolkit_interface():
     test_case_gen_input = TestCaseGenBuildInput(
-        python_tool_str=python_tool_str, test_case_values=values
-    )
-    test_case_generation_toolkit = NLTestCaseGenComponent()
-    result = test_case_generation_toolkit.process(
-        data=test_case_gen_input, config=config, phase=AgentPhase.BUILDTIME
-    )
-    return result
-
-
-python_tool_str = '''
+        python_tool_str='''
 from enum import Enum
 from typing import ClassVar, Optional, Type
 import datetime
@@ -157,25 +148,36 @@ def get_upcoming_time_off(
     if (len(time_off_events)==0):
         return {"status_code": 500, "error": "Invalid values for time off types, valid values are ABSENCE, PUBLIC_HOLIDAY, NON_WORKING_DAY"}
     else:
-        return UpcomingTimeOffResponse(time_off_events)'''
+        return UpcomingTimeOffResponse(time_off_events)''',
+        test_case_values=[
+            {
+                "user_id": ["user123"],
+                "start_date": ["2023-10-01"],
+                "end_date": ["2023-10-31"],
+                "time_off_types": [["ABSENCE", "PUBLIC_HOLIDAY"]],
+            }
+        ],
+    )
+    config = TestCaseGenConfig(
+        llm_client=get_llm_client_obj(model_name="mistralai/mistral-medium-2505"),
+        gen_mode=GenerationMode.TEXT,
+        max_nl_utterances=3,
+        max_testcases=3,
+        clean_nl_utterances=True,
+        negative_test_cases=True,
+    )
 
-values = [
-    {
-        "user_id": ["user123"],
-        "start_date": ["2023-10-01"],
-        "end_date": ["2023-10-31"],
-        "time_off_types": [["ABSENCE", "PUBLIC_HOLIDAY"]],
-    }
-]
-
-config = TestCaseGenConfig(
-    llm_client=get_llm_client_obj(model_name="mistralai/mistral-medium-2505"),
-    gen_mode=GenerationMode.TEXT,
-    max_nl_utterances=3,
-    max_testcases=3,
-    clean_nl_utterances=True,
-    negative_test_cases=True,
-)
-
-result = example_testcase_generation_with_toolkit(python_tool_str, values, config)
-print(result.nl_test_cases)
+    test_case_generation_toolkit = NLTestCaseGenComponent()
+    result = test_case_generation_toolkit.process(
+        data=test_case_gen_input, config=config, phase=AgentPhase.BUILDTIME
+    )
+    assert result.nl_test_cases is not None and type(result.nl_test_cases) is dict
+    assert "Test_scenarios" in result.nl_test_cases
+    assert (
+        len(result.nl_test_cases["Test_scenarios"]) > 0
+        and len(result.nl_test_cases["Test_scenarios"]) <= 3
+    )
+    assert (
+        len(result.nl_test_cases["Test_scenarios"][0]["nl_utterance"]) > 0
+        and len(result.nl_test_cases["Test_scenarios"][0]["nl_utterance"]) <= 3
+    )

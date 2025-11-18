@@ -1,18 +1,16 @@
+import sys
 from altk.core.toolkit import AgentPhase
 import os
 from altk.build_time.tool_validation_toolkit.core.toolkit import ToolValidationInput
 from altk.build_time.tool_validation_toolkit.core.config import ToolValidationConfig
 from altk.build_time.tool_validation_toolkit.utils.tool_validation import (
+    ToolValidationComponent,
     PythonToolValidationComponent,
 )
 
+
 # creating react agent with python tool
 import importlib.util
-
-# adding react agent llm code for WATSONX
-from ibm_watsonx_ai import Credentials as wx_credentials
-from langchain_ibm import ChatWatsonx
-from langgraph.prebuilt import create_react_agent
 
 
 def get_python_tool(python_tool_string, python_tool_name):
@@ -22,13 +20,19 @@ def get_python_tool(python_tool_string, python_tool_name):
     return tool_py.__getattribute__(python_tool_name)
 
 
+# adding react agent llm code for WATSONX
+from ibm_watsonx_ai import Credentials as wx_credentials
+from langchain_ibm import ChatWatsonx
+from langgraph.prebuilt import create_react_agent
+
+
 def get_agent_llm(agent_llm_model_id="mistralai/mistral-medium-2505"):
     WATSONX_URL = os.getenv("WX_URL", "https://us-south.ml.cloud.ibm.com")
     WATSONX_API_KEY = os.getenv("WX_API_KEY", "")
     WATSONX_PROJECT = os.getenv("WX_PROJECT_ID", "")
 
     # set "WATSONX_API_KEY" env variable as required by ChatWatsonx Model
-    os.environ["WATSONX_API_KEY"] = WATSONX_API_KEY
+    os.environ["WATSONX_APIKEY"] = WATSONX_API_KEY
     credentials = wx_credentials(url=WATSONX_URL, api_key=WATSONX_API_KEY)
     project_id = WATSONX_PROJECT
     try:
@@ -45,7 +49,7 @@ def get_agent_llm(agent_llm_model_id="mistralai/mistral-medium-2505"):
             params=llm_parameters,
         )
         return wx_chat_llm
-    except Exception as e:
+    except ValueError as e:
         print(
             "Please check if all WatsonX related environment varaibles - WX_URL , WX_API_KEY , WX_PROJECT_ID are set"
         )
@@ -65,7 +69,6 @@ def get_react_agent(
     return react_agent_with_tools
 
 
-# required inputs for the module
 python_tool_name = "getApiV2Tickets"
 python_tool_string = """
 import json
@@ -209,9 +212,8 @@ agent_with_tools = get_react_agent(
 config = ToolValidationConfig(report_level="detailed")
 
 
-def example_tool_validation_with_toolkit(
-    python_tool_name, tool_test_cases, agent_with_tools, config
-):
+# @pytest.mark.skipif(sys.version_info < (3, 12), reason="Toolops requires Python 3.12")
+def test_tool_validation_with_toolkit_interface():
     tool_validation_input = ToolValidationInput(
         python_tool_name=python_tool_name,
         tool_test_cases=tool_test_cases,
@@ -222,10 +224,13 @@ def example_tool_validation_with_toolkit(
     result = tool_validation_middleware.process(
         data=tool_validation_input, config=config, phase=AgentPhase.RUNTIME
     )
-    return result
-
-
-result = example_tool_validation_with_toolkit(
-    python_tool_name, tool_test_cases, agent_with_tools, config
-)
-print(result.test_report)
+    # import json
+    # with open('tool_test_report','w') as trf:
+    #     json.dump(result.test_report,trf,indent=2)
+    # trf.close()
+    assert result.test_report is not None
+    assert (
+        isinstance(result.test_report, dict)
+        and "tool_test_cases" in result.test_report
+        and len(result.test_report.get("tool_test_cases")) == 10
+    )

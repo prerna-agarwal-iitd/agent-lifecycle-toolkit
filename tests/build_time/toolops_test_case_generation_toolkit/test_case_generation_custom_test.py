@@ -21,16 +21,9 @@ def get_llm_client_obj(model_name="mistralai/mistral-medium-2505"):
     return client
 
 
-def example_testcase_generation_with_toolkit(python_tool_str, config):
-    test_case_gen_input = TestCaseGenBuildInput(python_tool_str=python_tool_str)
-    test_case_generation_toolkit = NLTestCaseGenComponent()
-    result = test_case_generation_toolkit.process(
-        data=test_case_gen_input, config=config, phase=AgentPhase.BUILDTIME
-    )
-    return result
-
-
-python_tool_str = '''import requests
+def test_case_generation_with_toolkit_interface():
+    test_case_gen_input = TestCaseGenBuildInput(
+        python_tool_str='''import requests
 from typing import Optional, Dict, Any
 from langchain_core.tools import tool
 from model_utils import load_github_token
@@ -51,15 +44,26 @@ def listIssues(owner: str, repo: str, requestBody: Optional[Dict[str, Any]] = No
     response = requests.get(url, headers=headers, params=requestBody or {})
     response.raise_for_status()
     return response.json()'''
-
-config = TestCaseGenConfig(
-    llm_client=get_llm_client_obj(model_name="mistralai/mistral-medium-2505"),
-    gen_mode=GenerationMode.TEXT,
-    max_nl_utterances=3,
-    max_testcases=3,
-    clean_nl_utterances=True,
-    negative_test_cases=True,
-)
-
-result = example_testcase_generation_with_toolkit(python_tool_str, config)
-print(result.nl_test_cases)
+    )
+    config = TestCaseGenConfig(
+        llm_client=get_llm_client_obj(model_name="mistralai/mistral-medium-2505"),
+        gen_mode=GenerationMode.TEXT,
+        max_nl_utterances=3,
+        max_testcases=3,
+        clean_nl_utterances=True,
+        negative_test_cases=True,
+    )
+    test_case_generation_toolkit = NLTestCaseGenComponent()
+    result = test_case_generation_toolkit.process(
+        data=test_case_gen_input, config=config, phase=AgentPhase.BUILDTIME
+    )
+    assert result.nl_test_cases is not None and type(result.nl_test_cases) is dict
+    assert "Test_scenarios" in result.nl_test_cases
+    assert (
+        len(result.nl_test_cases["Test_scenarios"]) > 0
+        and len(result.nl_test_cases["Test_scenarios"]) <= 3
+    )
+    assert (
+        len(result.nl_test_cases["Test_scenarios"][0]["nl_utterance"]) > 0
+        and len(result.nl_test_cases["Test_scenarios"][0]["nl_utterance"]) <= 3
+    )
