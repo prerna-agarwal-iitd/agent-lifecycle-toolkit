@@ -44,5 +44,5 @@ This component expects the following input and generates the following output.
 `test_report`: Tool test report with identified tool error taxonomy, recommendations for each test case (additionally tool execution logs can be added).
 
 ## Getting Started
-Refer to this [README](../../altk/tool_validation_toolkit/README.md) for instructions on how to get started with the code. 
-See an example in action [here](../../examples/tool_validation_single_tool_example.py).
+Refer to this [README](../../../altk/build_time/tool_validation_toolkit/README.md) for instructions on how to get started with the code. 
+See an example in action [here](../../../examples/tool_validation_single_tool_example.py).
