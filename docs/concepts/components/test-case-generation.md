@@ -41,5 +41,5 @@ The distribution of these metrics are as follows:
 ![img_tc_gen_fluency.png](../../assets/img_tc_gen_fluency.png)
 
 ## Getting Started
-Refer to this [README](https://github.com/AgentToolkit/agent-lifecycle-toolkit/blob/main/altk/post_request/test_case_generation_toolkit/README.md) for instructions on how to get started with the code.
+Refer to this [README](https://github.com/AgentToolkit/agent-lifecycle-toolkit/blob/main/altk/build_time/test_case_generation_toolkit/README.md) for instructions on how to get started with the code.
 See an example in action [here](https://github.com/AgentToolkit/agent-lifecycle-toolkit/blob/main/examples/testcase_generation_example.py).
