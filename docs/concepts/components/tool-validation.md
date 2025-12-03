@@ -26,12 +26,12 @@ This component performs tool validation and provide test report with the followi
 ## Architecture
 The figure below shows the flow of tool validation.
 
-![img_tool_val.png](../assets/img_tool_val.png)
+<img src="../../../docs/assets/img_tool_val.png" width="60%">
 
 ## Benchmarking
 Tool Validation is benchmarked on more than 180 tools related to enterprise applications with 2400 test cases. Following is the benchmarking results show that tool failures happen due to various errors and approximately 30 percent of test cases are passed with out any errors and only 36 percent of tools are working without any failures.
 
-![img_tool_validation_benchmark.png](../assets/img_tool_validation_benchmark.png)
+![img_tool_validation_benchmark.png](../../../docs/assets/img_tool_validation_benchmark.png)
 
 ### Interface
 This component expects the following input and generates the following output. 
