@@ -15,7 +15,7 @@ formats and any internal parameter dependencies. This component is designed to p
 ## Architecture
 The figure below shows the flow of test case generation.
 
-<img src="../../../docs/assets/img_tool_enrich.png" width="60%">
+<img src="../../../docs/assets/img_test_case.png" width="60%">
 
 ### Interface
 This component expects the following inputs and generates the following output.
