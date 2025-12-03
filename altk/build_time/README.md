@@ -2,7 +2,7 @@
 
 This stage occurs during building of tools and agents.
 
-![img_altk_build_time.png](../assets/img_altk_build_time.png)
+![img_altk_build_time.png](../../docs/assets/img_altk_build_time.png)
 
 ALTK includes the following components for this stage:
 
