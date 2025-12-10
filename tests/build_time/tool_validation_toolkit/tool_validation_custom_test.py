@@ -7,8 +7,6 @@ from altk.build_time.tool_validation_toolkit.utils.tool_validation import (
     ToolValidationComponent,
     PythonToolValidationComponent,
 )
-
-
 # creating react agent with python tool
 import importlib.util
 
@@ -19,7 +17,9 @@ def get_python_tool(python_tool_string, python_tool_name):
     exec(python_tool_string, tool_py.__dict__)
     return tool_py.__getattribute__(python_tool_name)
 
-
+os.system('pip install ibm-watsonx-ai')
+os.system('pip install langchain-ibm')
+os.system('pip install langgraph')
 # adding react agent llm code for WATSONX
 from ibm_watsonx_ai import Credentials as wx_credentials
 from langchain_ibm import ChatWatsonx
