@@ -19,9 +19,6 @@ def get_python_tool(python_tool_string, python_tool_name):
     return tool_py.__getattribute__(python_tool_name)
 
 
-os.system("pip install ibm-watsonx-ai")
-os.system("pip install langchain-ibm")
-os.system("pip install langgraph")
 # adding react agent llm code for WATSONX
 from ibm_watsonx_ai import Credentials as wx_credentials
 from langchain_ibm import ChatWatsonx
