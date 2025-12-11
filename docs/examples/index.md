@@ -8,4 +8,4 @@
 6. [Policy Guard Jupyter Notebook](https://github.com/AgentToolkit/agent-lifecycle-toolkit/blob/main/examples/policy_guard_example.ipynb)
 7. [Test Case Generation Jupyter Notebook](https://github.com/AgentToolkit/agent-lifecycle-toolkit/blob/main/examples/Test-Case-Generation-Example.ipynb)
 8. [Tool Validation Jupyter Notebook](https://github.com/AgentToolkit/agent-lifecycle-toolkit/blob/main/examples/Tool-Validation-Example.ipynb)
-9. [Tool Enrichment Jupyter Notebook](https://github.com/prerna-agarwal-iitd/agent-lifecycle-toolkit/blob/main/examples/Tool-Enrichment-example.ipynb)
+9. [Tool Enrichment Jupyter Notebook](https://github.com/AgentToolkit/agent-lifecycle-toolkit/blob/main/examples/Tool-Enrichment-example.ipynb)
